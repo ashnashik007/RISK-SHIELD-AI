@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RiskShield AI — Financial Risk Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">R</div>
+        <div><strong>RiskShield</strong><span>AI Risk Manager</span></div>
+      </div>
+
+      <nav>
+        <button class="nav-item active" data-page="overview"><span>⌂</span> Overview</button>
+        <button class="nav-item" data-page="transactions"><span>↔</span> Transactions</button>
+        <button class="nav-item" data-page="investigations"><span>◉</span> Investigations <b id="investigationBadge">0</b></button>
+        <button class="nav-item" data-page="simulator"><span>⚡</span> Risk Simulator</button>
+        <button class="nav-item" data-page="analytics"><span>▥</span> Analytics</button>
+        <button class="nav-item" data-page="policies"><span>◇</span> Policy Guard</button>
+        <button class="nav-item" data-page="audit"><span>▤</span> Audit Trail</button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="system-card">
+          <div class="dot" id="engineDot"></div>
+          <div><strong id="engineStatus">AI Engine Online</strong><span id="engineSub">Connecting to backend…</span></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">AUTONOMOUS FINANCIAL RISK PLATFORM</p>
+          <h1 id="pageTitle">Risk Overview</h1>
+        </div>
+        <div class="top-actions">
+          <div class="live"><span id="liveDot"></span> <span id="liveLabel">Live monitoring</span></div>
+          <button class="icon-btn" id="notificationBtn">◔</button>
+          <div class="avatar">AS</div>
+        </div>
+      </header>
+
+      <section id="overview" class="page active">
+        <div class="hero">
+          <div>
+            <div class="hero-label">PORTFOLIO RISK</div>
+            <div class="risk-number" id="overallRisk">--<span>/100</span></div>
+            <p id="riskSummary">Loading current portfolio exposure…</p>
+          </div>
+          <div class="hero-chart">
+            <div class="sparkline" id="sparkline"></div>
+            <span>Risk trend · recent transactions</span>
+          </div>
+        </div>
+
+        <div class="metrics">
+          <div class="metric"><span>Transactions</span><strong id="txCount">--</strong><small>Since server start</small></div>
+          <div class="metric"><span>High risk</span><strong id="highRisk">--</strong><small class="danger-text">High + critical</small></div>
+          <div class="metric"><span>Investigations</span><strong id="activeInvestigations">--</strong><small id="activeInvestigationsSub">currently open</small></div>
+          <div class="metric"><span>Auto actions</span><strong id="autoActions">--</strong><small class="success-text" id="autoActionsSub">executed autonomously</small></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head"><div><h2>Live risk stream</h2><p>Transactions being scored in real time</p></div><button class="ghost" onclick="showPage('transactions')">View all →</button></div>
+            <div id="stream" class="stream"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><div><h2>Risk distribution</h2><p>Current transaction population</p></div></div>
+            <div class="distribution">
+              <div class="donut" id="riskDonut"><div><strong id="donutTotal">--</strong><span>transactions</span></div></div>
+              <div class="legend">
+                <div><i class="low"></i><span>Low</span><b id="legendLow">--%</b></div>
+                <div><i class="medium"></i><span>Medium</span><b id="legendMedium">--%</b></div>
+                <div><i class="high"></i><span>High</span><b id="legendHigh">--%</b></div>
+              </div>
+            </div>
+            <div class="mini-callout"><span>✦</span><div><strong>AI insight</strong><p id="aiInsight">Gathering signal from recent activity…</p></div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div><h2>Active investigations</h2><p>AI agents currently analyzing risk events</p></div><button class="primary" onclick="showPage('simulator')">+ Simulate Risk</button></div>
+          <div id="investigationTable"></div>
+        </div>
+      </section>
+
+      <section id="transactions" class="page">
+        <div class="page-intro"><div><h2>Transaction Intelligence</h2><p>Search, inspect and score financial events.</p></div><button class="primary" id="generateBtn" onclick="generateTransaction()">⚡ Generate transaction</button></div>
+        <div class="toolbar"><input id="searchTx" placeholder="Search transaction, customer or location..." oninput="renderTransactions()"><select id="riskFilter" onchange="renderTransactions()"><option value="all">All risk levels</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></div>
+        <div class="panel table-panel"><div id="transactionsTable">Loading…</div></div>
+      </section>
+
+      <section id="investigations" class="page">
+        <div class="page-intro"><div><h2>AI Investigations</h2><p>Autonomous evidence gathering and risk reasoning — every card below is a real, persisted case.</p></div></div>
+        <div id="investigationCards" class="investigation-grid"></div>
+      </section>
+
+      <section id="simulator" class="page">
+        <div class="page-intro"><div><h2>Risk Simulator</h2><p>Create different financial scenarios and watch RiskShield reason about them, end to end.</p></div></div>
+        <div class="simulator-layout">
+          <div class="panel form-panel">
+            <h2>Transaction scenario</h2>
+            <p class="muted">Change any value, then run it through the live agent pipeline.</p>
+            <label>Transaction amount <output id="amountOut">₹87,500</output><input id="amount" type="range" min="500" max="200000" step="500" value="87500"></label>
+            <label>Transaction velocity <output id="velocityOut">6 transactions / hour</output><input id="velocity" type="range" min="1" max="20" value="6"></label>
+            <label>Customer history <select id="history"><option value="normal">Normal</option><option value="mixed">Mixed</option><option value="poor">High-risk history</option></select></label>
+            <label>Device <select id="device"><option value="known">Known device</option><option value="new">New device</option></select></label>
+            <label>Location <select id="location"><option value="usual">Usual location</option><option value="unusual">Unusual location</option></select></label>
+            <label>Beneficiary <select id="beneficiary"><option value="known">Known beneficiary</option><option value="new">New beneficiary</option></select></label>
+            <label>Transaction time <select id="time"><option value="normal">Normal time</option><option value="unusual">Unusual time (02:30 AM)</option></select></label>
+            <div class="button-row"><button class="primary wide" id="analyzeBtn" onclick="analyzeScenario()">Analyze with AI</button><button class="ghost" onclick="loadHighRisk()">Load high-risk example</button></div>
+          </div>
+
+          <div class="panel result-panel" id="simResult">
+            <div class="empty-state"><div class="big-icon">✦</div><h2>Ready for analysis</h2><p>Configure a scenario and let RiskShield score, investigate and recommend a policy-aware action.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="analytics" class="page">
+        <div class="page-intro"><div><h2>Risk Analytics</h2><p>Derived live from every scored transaction and case outcome.</p></div></div>
+        <div class="analytics-grid">
+          <div class="panel"><h2>Risk by category</h2><div class="bars" id="categoryBars"></div></div>
+          <div class="panel score-panel">
+            <div class="score-ring" id="scoreRing">--<span>SCORE</span></div>
+            <h2>Agent performance</h2>
+            <p>Computed from real case outcomes</p>
+            <div id="healthRows"></div>
+          </div>
+        </div>
+        <div class="panel"><h2>Recent risk trend</h2><div class="big-chart"><div class="chart-line"></div><div class="chart-labels" id="trendLabels"><span>older</span><span>newer</span></div></div></div>
+      </section>
+
+      <section id="policies" class="page">
+        <div class="page-intro"><div><h2>Policy Guard</h2><p>Control what the AI can and cannot do autonomously. Changes apply to every future decision immediately.</p></div><button class="primary" onclick="savePolicies()">Save policies</button></div>
+        <div class="policy-grid">
+          <div class="panel"><h2>Risk thresholds</h2><p class="muted">These thresholds drive automated routing.</p>
+            <div class="policy-row"><span>Low → Medium</span><input id="p1" type="number" value="30"><small>/ 100</small></div>
+            <div class="policy-row"><span>Medium → High</span><input id="p2" type="number" value="60"><small>/ 100</small></div>
+            <div class="policy-row"><span>High → Critical</span><input id="p3" type="number" value="80"><small>/ 100</small></div>
+          </div>
+          <div class="panel"><h2>Autonomous actions</h2><p class="muted">Safe actions can execute automatically; high-impact actions require approval.</p>
+            <label class="toggle-row"><span>Flag transaction</span><input type="checkbox" id="toggleFlag" checked></label>
+            <label class="toggle-row"><span>Request verification</span><input type="checkbox" id="toggleVerify" checked></label>
+            <label class="toggle-row"><span>Simulated transaction hold</span><input type="checkbox" id="toggleHold" checked></label>
+            <label class="toggle-row"><span>Account freeze</span><input type="checkbox" id="toggleFreeze"></label>
+          </div>
+          <div class="panel"><h2>Current policy status</h2><div class="policy-status" id="policyStatus"></div></div>
+        </div>
+      </section>
+
+      <section id="audit" class="page">
+        <div class="page-intro"><div><h2>Audit Trail</h2><p>Every detect / investigate / decide / check / execute / verify step, in order.</p></div><button class="ghost" onclick="renderAudit()">↻ Refresh</button></div>
+        <div class="panel table-panel"><div id="auditTable">Loading…</div></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>

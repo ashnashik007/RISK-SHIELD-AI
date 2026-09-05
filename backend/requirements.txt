@@ -1,0 +1,10 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+sqlalchemy>=2.0
+pydantic>=2.6
+python-multipart>=0.0.9
+
+# Optional - only used if you set ANTHROPIC_API_KEY, to generate richer
+# root-cause narratives in the Investigate stage. The app works fully
+# without it (falls back to a deterministic template).
+# anthropic>=0.34
